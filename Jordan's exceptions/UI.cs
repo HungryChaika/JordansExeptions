@@ -32,6 +32,61 @@ namespace JordansExceptions
             return Elem;
         }
 
+        public void FillArrayCoefficientsAndAnswersSystemEquationsAndCoofs(double[,] Elems, double[] Answers, double[]? FCoofs = null)
+        {
+            Console.WriteLine("\n");
+            int NumberEquation = Elems.GetLength(0);
+            int MaxDegree = Elems.GetLength(1);
+            if (FCoofs is not null)
+            {
+                Console.WriteLine("Запишите функцию:");
+                Console.Write("f = ");
+                for (int k = 0; k < MaxDegree; k++)
+                {
+                    Console.Write($"B{k + 1} * x{k + 1}");
+                    if (k != MaxDegree - 1)
+                    {
+                        Console.Write(" + ");
+                    }
+                }
+                Console.Write(" -> MAX (пока что)\n");
+                for (int k = 0; k < MaxDegree; k++)
+                {
+                    Console.Write($"\nB{k + 1} = ");
+                    FCoofs[k] = Convert.ToDouble(Console.ReadLine());
+                }
+            }
+            Console.WriteLine("\nЗаполните систему уравнений:");
+            for (int i = 0; i < NumberEquation; i++)
+            {
+                for (int j = 0; j < MaxDegree; j++)
+                {
+                    Console.Write($"A{i + 1},{j + 1} * x{j + 1}");
+                    if (j == MaxDegree - 1)
+                    {
+                        Console.Write($" = A{i + 1},0\n");
+                    }
+                    else
+                    {
+                        Console.Write(" + ");
+                    }
+                }
+            }
+            for (int i = 0; i < NumberEquation; i++)
+            {
+                for (int j = 0; j < MaxDegree; j++)
+                {
+                    Console.Write($"\nA{i + 1},{j + 1} = ");
+                    Elems[i, j] = Convert.ToDouble(Console.ReadLine());
+                    if (j == MaxDegree - 1)
+                    {
+                        Console.Write($"\nA{i + 1},0 = ");
+                        Answers[i] = Convert.ToDouble(Console.ReadLine());
+                    }
+                }
+            }
+        }
+
         public void DrawJordanTable(double[,] Elems, bool[] CoefficientsNotTransferredYet, string[] CoefficientsTransferred)
         {
             Console.Write("\n\n");
@@ -139,7 +194,7 @@ namespace JordansExceptions
             }
         }
 
-        public void MatrixWrite(double[,] Matrix)
+        public void MatrixWrite<T>(T[,] Matrix)
         {
             Console.WriteLine("\n\n");
             for (int i = 0; i < Matrix.GetLength(0); i++)
@@ -149,6 +204,16 @@ namespace JordansExceptions
                     Console.Write(Matrix[i, j] + "   ");
                 }
                 Console.WriteLine("\n");
+            }
+            Console.WriteLine("\nДлина: " + Matrix.Length + "\n");
+        }
+
+        public void MatrixWrite<T>(T[] Matrix)
+        {
+            Console.WriteLine("\n\n");
+            for (int i = 0; i < Matrix.Length; i++)
+            {
+                Console.Write(Matrix[i] + "   ");
             }
             Console.WriteLine("\nДлина: " + Matrix.Length + "\n");
         }
