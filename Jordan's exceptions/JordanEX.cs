@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Xml.Linq;
+
 namespace JordansExceptions
 {
     class JordanEX
@@ -80,6 +82,25 @@ namespace JordansExceptions
                 double[] GCoofs = new double[MaxDegree];
                 Array.Fill(GCoofs, 0);
 
+                int[] IndependentElems = new int[MaxDegree];
+                for (int i = 0; i < IndependentElems.Length; i++)
+                {
+                    IndependentElems[i] = i + 1;
+                }
+
+                Console.Write("\n\n");
+                Console.Write("Это индексы верхних иксов");
+                ui.MatrixWrite(IndependentElems);
+
+                int[] DependentVariables = new int[NumberEquation];
+                for (int i = 0; i < DependentVariables.Length; i++)
+                {
+                    DependentVariables[i] = i + 1 + IndependentElems.Length;
+                }
+
+                Console.Write("Это индексы левых иксов");
+                ui.MatrixWrite(DependentVariables);
+
                 // MOCKS
                 double[,] Matrix = {
                     { 1, -4, 2, -5, 9 },
@@ -87,18 +108,48 @@ namespace JordansExceptions
                     { 0, 1, -1, 1, -1 }
                 };
                 double[] Answers = { 3, 6, 1, 0, 0};
-                double[] FCoofs = { 2, 6, -5, 1, 1 };
+                double[] FCoofs = { 2, 6, -5, 1, 4 };
                 // *****
 
                 //ui.FillArrayCoefficientsAndAnswersSystemEquationsAndCoofs(Matrix, Answers, FCoofs);
                 artificialBasisMethod.CalculationGCoofficients(Matrix, Answers, FCoofs, GCoofs);
-                int[] test = artificialBasisMethod.FindIndexesResolvingElement(Matrix, Answers, FCoofs, GCoofs);
+
+                Console.Write("Это элементы строки G");
                 ui.MatrixWrite(GCoofs);
-                ui.MatrixWrite(test);
+                Console.Write("Это элементы Answers");
+                ui.MatrixWrite(Answers);
+
+                int[] IndexesResolvingElem = artificialBasisMethod.FindIndexesResolvingElement(Matrix, Answers, FCoofs, GCoofs);
+
+                Console.Write("Координаты разрешающего элемента");
+                ui.MatrixWrite(IndexesResolvingElem);
+
+                artificialBasisMethod.StepJordanEx( IndexesResolvingElem[0], IndexesResolvingElem[1], Matrix, Answers,
+                                                    FCoofs, GCoofs, DependentVariables, IndependentElems );
+
+                Console.Write("Это элементы Matrix");
+                ui.MatrixWrite(Matrix);
+
+                Console.Write("Это элементы Answers");
+                ui.MatrixWrite(Answers);
+
+                Console.Write("Это элементы строки F");
+                ui.MatrixWrite(FCoofs);
+
+                Console.Write("Это элементы строки G");
+                ui.MatrixWrite(GCoofs);
+
+                Console.Write("Это индексы верхних иксов");
+                ui.MatrixWrite(IndependentElems);
+
+                Console.Write("Это индексы левых иксов");
+                ui.MatrixWrite(DependentVariables);
 
                 // ****************************************************************
                 // Получаю позицию разрешающего элемента, далее нужен Жорданов Шаг;
                 // ****************************************************************
+
+
 
             }
 

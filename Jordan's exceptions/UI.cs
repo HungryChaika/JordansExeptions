@@ -215,7 +215,7 @@ namespace JordansExceptions
             {
                 Console.Write(Matrix[i] + "   ");
             }
-            Console.WriteLine("\nДлина: " + Matrix.Length + "\n");
+            Console.WriteLine("\nДлина: " + Matrix.Length + "\n\n");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 
 namespace JordansExceptions
 {
@@ -87,6 +88,62 @@ namespace JordansExceptions
                 }
             }
             return IndexElem;
+        }
+
+        public void StepJordanEx(int XCoord, int YCoord, double[,] Elems, double[] Answers, double[] FCoofs,
+                                  double[] GCoofs, int[] DependentVariables, int[] IndependentElems)
+        {
+            double[,] FuncElems = new double[NumberEquation, MaxDegree];
+            double[] FuncAnswers = new double[NumberEquation + 2];
+            double[] FuncFCoofs = new double[MaxDegree];
+            double[] FuncGCoofs = new double[MaxDegree];
+
+            for (int i = 0; i < NumberEquation; i++)
+            {
+                for (int j = 0; j < MaxDegree; j++)
+                {
+                    if (i == XCoord || j == YCoord)
+                    {
+                        FuncElems[i, j] = Elems[i, j] / Elems[XCoord, YCoord];
+                    }
+                    if (i != XCoord && j != YCoord)
+                    {
+                        FuncElems[i, j] = (Elems[i, j] * Elems[XCoord, YCoord] - Elems[XCoord, j] * Elems[i, YCoord]) / Elems[XCoord, YCoord];
+                    }
+                }
+                if (i == XCoord)
+                {
+                    FuncAnswers[i] = Answers[i] / Elems[XCoord, YCoord];
+                }
+                else
+                {
+                    FuncAnswers[i] = (Answers[i] * Elems[XCoord, YCoord] - Answers[XCoord] * Elems[i, YCoord]) / Elems[XCoord, YCoord];
+                }
+            }
+            FuncAnswers[NumberEquation] = (Answers[NumberEquation] * Elems[XCoord, YCoord] - Answers[XCoord] * FCoofs[YCoord]) / Elems[XCoord, YCoord];
+            FuncAnswers[NumberEquation + 1] = (Answers[NumberEquation + 1] * Elems[XCoord, YCoord] - Answers[XCoord] * GCoofs[YCoord]) / Elems[XCoord, YCoord];
+
+            for (int k = 0; k < MaxDegree; k++)
+            {
+                if (k == YCoord)
+                {
+                    FuncFCoofs[k] = FCoofs[k] / Elems[XCoord, YCoord];
+                    FuncGCoofs[k] = GCoofs[k] / Elems[XCoord, YCoord];
+                }
+                else
+                {
+                    FuncFCoofs[k] = (FCoofs[k] * Elems[XCoord, YCoord] - FCoofs[YCoord] * Elems[XCoord, k]) / Elems[XCoord, YCoord];
+                    FuncGCoofs[k] = (GCoofs[k] * Elems[XCoord, YCoord] - GCoofs[YCoord] * Elems[XCoord, k]) / Elems[XCoord, YCoord];
+                }
+            }
+
+            int Item = IndependentElems[YCoord];
+            IndependentElems[YCoord] = DependentVariables[XCoord];
+            DependentVariables[XCoord] = Item;
+            Array.Copy(FuncElems, Elems, FuncElems.Length);
+            Array.Copy(FuncAnswers, Answers, FuncAnswers.Length);
+            Array.Copy(FuncFCoofs, FCoofs, FuncFCoofs.Length);
+            Array.Copy(FuncGCoofs, GCoofs, FuncGCoofs.Length);
         }
 
 
