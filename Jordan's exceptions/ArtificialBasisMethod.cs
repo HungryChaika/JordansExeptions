@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System;
+﻿using System;
 
 namespace JordansExceptions
 {
@@ -34,60 +33,148 @@ namespace JordansExceptions
             }
         }
 
-        public int[] FindIndexesResolvingElement(double[,] Elems, double[] Answers, double[] FCoofs, double[] GCoofs)
+        public int[] FindIndexesResolvingElement(double[,] Elems, double[] Answers, double[] FCoofs, double[] GCoofs, bool flashok = false)
         {
-            double[] CopiedAndSortGCoofs = new double[GCoofs.Length];
-            Array.Copy(GCoofs, CopiedAndSortGCoofs, GCoofs.Length);
-            Array.Sort(CopiedAndSortGCoofs);
-            double[] CopyGCoofs = new double[GCoofs.Length];
-            Array.Copy(GCoofs, CopyGCoofs, GCoofs.Length);
-
-            int[] IndexElem = new int[2] { -1, -1 };
-            double Elem = double.NaN;
-            //Console.WriteLine($"\nElem is {Elem}");
-            for (int i = 0; i < CopiedAndSortGCoofs.Length; i++)
+            if (flashok)
             {
-                for (int j = 0; j < CopyGCoofs.Length; j++)
+                return new int[2] { 0, 0 };
+            }
+
+            bool FlagGCoofsHaveNotNegativeNumbers = true;
+            bool FlagGCoofsHaveZeroNumbers = false;
+            bool[] IndexsZeroNumbersInGCoofs = new bool[GCoofs.Length];
+            Array.Fill(IndexsZeroNumbersInGCoofs, false);
+
+            for (int k = 0; k < GCoofs.Length; k++)
+            {
+                if (GCoofs[k] < 0)
                 {
-                    if (CopiedAndSortGCoofs[i] == CopyGCoofs[j])
+                    FlagGCoofsHaveNotNegativeNumbers = false;
+                    break;
+                }
+                else if(GCoofs[k] == 0)
+                {
+                    IndexsZeroNumbersInGCoofs[k] = true;
+                    FlagGCoofsHaveZeroNumbers = true;
+                }
+            }
+
+            if (FlagGCoofsHaveNotNegativeNumbers)
+            {
+                if (FlagGCoofsHaveZeroNumbers)
+                {
+                    double SmallestElemFCoof = double.NaN;
+                    int IndexSmallerElemFCoof = -1;
+
+                    for (int k = 0; k < IndexsZeroNumbersInGCoofs.Length; k++)
                     {
-                        CopyGCoofs[j] = double.NaN;
-                        if(GCoofs[j] < 0)
+                        if (IndexsZeroNumbersInGCoofs[k])
                         {
-                            for (int k = 0; k < Elems.GetLength(0); k++)
+                            if (SmallestElemFCoof is double.NaN && FCoofs[k] < 0)
                             {
-                                if (Elems[k, j] > 0)
+                                SmallestElemFCoof = FCoofs[k];
+                                IndexSmallerElemFCoof = k;
+                            }
+                            else if (FCoofs[k] < SmallestElemFCoof)
+                            {
+                                SmallestElemFCoof = FCoofs[k];
+                                IndexSmallerElemFCoof = k;
+                            }
+                        }
+                    }
+
+                    if (SmallestElemFCoof is double.NaN)
+                    {
+
+                        return new int[2] { -1, -1 };// Решение - план оптимален!
+
+                    }
+                    else
+                    {
+                        double AnswerNumber = double.NaN;
+                        int[] IndexsAnswerNumber = new int[2] { -2, -2 };
+
+                        for (int k = 0; k < Elems.GetLength(0); k++)
+                        {
+                            if (Elems[k, IndexSmallerElemFCoof] > 0)
+                            {
+                                if (AnswerNumber is double.NaN)
                                 {
-                                    if (Elem is double.NaN)
+                                    AnswerNumber = Answers[k] / Elems[k, IndexSmallerElemFCoof];
+                                    IndexsAnswerNumber[0] = k;
+                                    IndexsAnswerNumber[1] = IndexSmallerElemFCoof;
+                                }
+                                else
+                                {
+                                    double PotentialAnswerNumber = Answers[k] / Elems[k, IndexSmallerElemFCoof];
+                                    if (PotentialAnswerNumber < AnswerNumber)
                                     {
-                                        //Console.WriteLine($"row: {k}, column: {j}");
-                                        Elem = Answers[k] / Elems[k, j];
-                                        IndexElem[0] = k;
-                                        IndexElem[1] = j;
-                                        //Console.WriteLine($"Elem is {Elem}");
-                                    }
-                                    else
-                                    {
-                                        //Console.WriteLine($"row: {k}, column: {j}");
-                                        double PotentialElem = Answers[k] / Elems[k, j];
-                                        //Console.WriteLine($"PotentialElem is {PotentialElem}");
-                                        if (PotentialElem < Elem)
-                                        {
-                                            Elem = PotentialElem;
-                                            IndexElem[0] = k;
-                                            IndexElem[1] = j;
-                                        }
-                                        //Console.WriteLine($"Elem is {Elem}");
+                                        AnswerNumber = PotentialAnswerNumber;
+                                        IndexsAnswerNumber[0] = k;
+                                        IndexsAnswerNumber[1] = IndexSmallerElemFCoof;
                                     }
                                 }
                             }
                         }
-                        
-                        break;
+
+                        return IndexsAnswerNumber; // вернёт либо координаты, либо значения - значащие, что элемент не найден и решения нет
+
                     }
                 }
+                else
+                {
+                    return new int[2] { -5, -5 };// Этого быть не должно (сказал Виталий Иванович)
+                }
             }
-            return IndexElem;
+            else
+            {
+                double SmallestElemGCoof = double.NaN;
+                int IndexSmallerElemGCoof = -1;
+
+                for (int k = 0; k < GCoofs.Length; k++)
+                {
+                    if (SmallestElemGCoof is double.NaN && GCoofs[k] < 0)
+                    {
+                        SmallestElemGCoof = GCoofs[k];
+                        IndexSmallerElemGCoof = k;
+                    }
+                    else if (GCoofs[k] < SmallestElemGCoof)
+                    {
+                        SmallestElemGCoof = GCoofs[k];
+                        IndexSmallerElemGCoof = k;
+                    }
+                }
+
+                double AnswerNumber = double.NaN;
+                int[] IndexsAnswerNumber = new int[2] { -2, -2 }; // Можно придумать др. значения
+
+                for (int k = 0; k < Elems.GetLength(0); k++)
+                {
+                    if (Elems[k, IndexSmallerElemGCoof] > 0)
+                    {
+                        if (AnswerNumber is double.NaN)
+                        {
+                            AnswerNumber = Answers[k] / Elems[k, IndexSmallerElemGCoof];
+                            IndexsAnswerNumber[0] = k;
+                            IndexsAnswerNumber[1] = IndexSmallerElemGCoof;
+                        }
+                        else
+                        {
+                            double PotentialAnswerNumber = Answers[k] / Elems[k, IndexSmallerElemGCoof];
+                            if (PotentialAnswerNumber < AnswerNumber)
+                            {
+                                AnswerNumber = PotentialAnswerNumber;
+                                IndexsAnswerNumber[0] = k;
+                                IndexsAnswerNumber[1] = IndexSmallerElemGCoof;
+                            }
+                        }
+                    }
+                }
+
+                return IndexsAnswerNumber; // Вернёт либо координаты, либо значения - значащие, что элемент не найден и решения нет
+            }
+
+            return new int[2] { -10, -10 }; // Ничего не произошло
         }
 
         public void StepJordanEx(int XCoord, int YCoord, double[,] Elems, double[] Answers, double[] FCoofs,
@@ -102,9 +189,13 @@ namespace JordansExceptions
             {
                 for (int j = 0; j < MaxDegree; j++)
                 {
-                    if (i == XCoord || j == YCoord)
+                    if (i == XCoord)
                     {
                         FuncElems[i, j] = Elems[i, j] / Elems[XCoord, YCoord];
+                    }
+                    if (j == YCoord && i != XCoord)
+                    {
+                        FuncElems[i, j] = Elems[i, j] / (-1) * Elems[XCoord, YCoord];
                     }
                     if (i != XCoord && j != YCoord)
                     {
@@ -127,8 +218,8 @@ namespace JordansExceptions
             {
                 if (k == YCoord)
                 {
-                    FuncFCoofs[k] = FCoofs[k] / Elems[XCoord, YCoord];
-                    FuncGCoofs[k] = GCoofs[k] / Elems[XCoord, YCoord];
+                    FuncFCoofs[k] = FCoofs[k] / (-1) * Elems[XCoord, YCoord];
+                    FuncGCoofs[k] = GCoofs[k] / (-1) * Elems[XCoord, YCoord];
                 }
                 else
                 {

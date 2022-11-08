@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Xml.Linq;
 
 namespace JordansExceptions
 {
@@ -61,7 +60,8 @@ namespace JordansExceptions
                     }
                 }
 
-            } else if(SelectedMethod == 2)
+            }
+            else if (SelectedMethod == 2)
             {
                 Console.WriteLine("\nМЕТОД ИСКУССТВЕННОГО БАЗИСА;\n");
                 Console.Write("размерность системы или max n среди всех x^n: ");
@@ -107,7 +107,7 @@ namespace JordansExceptions
                     { 0, 1, -3, 4, -5 },
                     { 0, 1, -1, 1, -1 }
                 };
-                double[] Answers = { 3, 6, 1, 0, 0};
+                double[] Answers = { 3, 6, 1, 0, 0 };
                 double[] FCoofs = { 2, 6, -5, 1, 4 };
                 // *****
 
@@ -118,44 +118,93 @@ namespace JordansExceptions
                 ui.MatrixWrite(GCoofs);
                 Console.Write("Это элементы Answers");
                 ui.MatrixWrite(Answers);
-
-                int[] IndexesResolvingElem = artificialBasisMethod.FindIndexesResolvingElement(Matrix, Answers, FCoofs, GCoofs);
-
-                Console.Write("Координаты разрешающего элемента");
-                ui.MatrixWrite(IndexesResolvingElem);
-
-                artificialBasisMethod.StepJordanEx( IndexesResolvingElem[0], IndexesResolvingElem[1], Matrix, Answers,
-                                                    FCoofs, GCoofs, DependentVariables, IndependentElems );
-
-                Console.Write("Это элементы Matrix");
-                ui.MatrixWrite(Matrix);
-
-                Console.Write("Это элементы Answers");
-                ui.MatrixWrite(Answers);
-
-                Console.Write("Это элементы строки F");
-                ui.MatrixWrite(FCoofs);
-
-                Console.Write("Это элементы строки G");
-                ui.MatrixWrite(GCoofs);
-
-                Console.Write("Это индексы верхних иксов");
-                ui.MatrixWrite(IndependentElems);
-
-                Console.Write("Это индексы левых иксов");
-                ui.MatrixWrite(DependentVariables);
-
-                // ****************************************************************
-                // Получаю позицию разрешающего элемента, далее нужен Жорданов Шаг;
-                // ****************************************************************
+                //int counter = 0;
+                while (true)
+                {
+                    //int[] IndexesResolvingElem;
+                    //if (counter == 0)
+                    //{
+                    //    IndexesResolvingElem = artificialBasisMethod.FindIndexesResolvingElement(Matrix, Answers, FCoofs, GCoofs, true);
+                    //}
+                    //else
+                    //{
+                    //    /*int[]*/ IndexesResolvingElem = artificialBasisMethod.FindIndexesResolvingElement(Matrix, Answers, FCoofs, GCoofs);
+                    //}
+                    int[] IndexesResolvingElem = artificialBasisMethod.FindIndexesResolvingElement(Matrix, Answers, FCoofs, GCoofs);
+                    //counter++;
+                    Console.Write("\n\n=================================\n\n");
+                    Console.Write("Координаты разрешающего элемента");
+                    ui.MatrixWrite(IndexesResolvingElem);
+                    Console.Write("\n\n=================================\n\n");
 
 
+                    // 1) НА ШАГЕ (7) ВСЕ С'j НЕ РАВНЫ НУЛЮ; - (Такого не будет)
+                    // 2) ПОЧЕМУ В ПРИМЕРЕ ПЕРЕД АЛГОРИТМОМ В ПЕРВОМ ЖОРДАНОВОМ ШАГЕ?
+                    // БЕРЁМ В СТРОКЕ G -1, А НЕ -3; - (Просто красиво не решалось)
+
+                    // Если 1) С'j = 0, а 2) Cj >= 0 и 3) иск-ые перем. = 0,
+                    // тогда мы получим оптимальный план искомой задачи.
+
+                    // Без (3) найдём просто оптимальный план расширенной задачи.
+
+                    // При наличии C'j < 0 или С'j = 0 и Cj < 0 всё будет зависеть от наличия разрешающего элемента,
+                    // Найдём, значит считаем дальше, а если не найдём, то решений нет.
+
+
+                    if (IndexesResolvingElem[0] == -1 && IndexesResolvingElem[1] == -1)
+                    {
+                        Console.WriteLine("\n\n\nНашёл ответ.\n\n\n");
+                        break;
+                    }
+                    else if (IndexesResolvingElem[0] == -2 && IndexesResolvingElem[1] == -2)
+                    {
+                        Console.WriteLine("\n\n\nРешений нет.\n\n\n");
+                        break;
+                    }
+                    else if (IndexesResolvingElem[0] == -5 && IndexesResolvingElem[1] == -5)
+                    {
+                        Console.WriteLine("\n\n\nБред какой-то!\n\n\n");
+                        break;
+                    }
+                    else if (IndexesResolvingElem[0] == -10 && IndexesResolvingElem[1] == -10)
+                    {
+                        Console.WriteLine("\n\n\nНичего не случилось?\n\n\n");
+                        break;
+                    }
+                    else
+                    {
+                    
+                        artificialBasisMethod.StepJordanEx(IndexesResolvingElem[0], IndexesResolvingElem[1], Matrix, Answers,
+                                                            FCoofs, GCoofs, DependentVariables, IndependentElems);
+                    }
+
+                    Console.Write("\n\n=================================\n\n");
+                    Console.Write("Это элементы Matrix");
+                    ui.MatrixWrite(Matrix);
+                    
+                    Console.Write("Это элементы Answers");
+                    ui.MatrixWrite(Answers);
+
+                    Console.Write("Это элементы строки F");
+                    ui.MatrixWrite(FCoofs);
+
+                    Console.Write("Это элементы строки G");
+                    ui.MatrixWrite(GCoofs);
+
+                    Console.Write("Это индексы верхних иксов");
+                    ui.MatrixWrite(IndependentElems);
+
+                    Console.Write("Это индексы левых иксов");
+                    ui.MatrixWrite(DependentVariables);
+                    Console.Write("\n\n=================================\n\n");
+
+                }
 
             }
 
-            // СЛЕДУЮЩАЯ ЛАБА - МЕТОД ИССКУСТВЕННОГО БАЗИСА
+            // ЛАБА - МЕТОД ИССКУСТВЕННОГО БАЗИСА
             // функция может стремиться как к max, так и к min обратить на это внимание
         }
 
     }
-} 
+}
