@@ -33,12 +33,12 @@ namespace JordansExceptions
             }
         }
 
-        public int[] FindIndexesResolvingElement(double[,] Elems, double[] Answers, double[] FCoofs, double[] GCoofs, bool flashok = false)
+        public int[] FindIndexesResolvingElement(double[,] Elems, double[] Answers, double[] FCoofs, double[] GCoofs/*, bool flashok = false*/)
         {
-            if (flashok)
-            {
-                return new int[2] { 0, 0 };
-            }
+            //if (flashok)
+            //{
+            //    return new int[2] { 0, 0 };
+            //}
 
             bool FlagGCoofsHaveNotNegativeNumbers = true;
             bool FlagGCoofsHaveZeroNumbers = false;

@@ -128,7 +128,7 @@ namespace JordansExceptions
                     //}
                     //else
                     //{
-                    //    /*int[]*/ IndexesResolvingElem = artificialBasisMethod.FindIndexesResolvingElement(Matrix, Answers, FCoofs, GCoofs);
+                    //    IndexesResolvingElem = artificialBasisMethod.FindIndexesResolvingElement(Matrix, Answers, FCoofs, GCoofs);
                     //}
                     int[] IndexesResolvingElem = artificialBasisMethod.FindIndexesResolvingElement(Matrix, Answers, FCoofs, GCoofs);
                     //counter++;
@@ -199,6 +199,13 @@ namespace JordansExceptions
                     Console.Write("\n\n=================================\n\n");
 
                 }
+
+                // Решение проблемы экспоненциальных чисел
+                Console.Write("\n\n\n\n");
+                double test = 4.0/3345675477373.0;
+                double answer = Convert.ToDouble(test.ToString("0.####"));
+                Console.WriteLine(test);
+                Console.WriteLine(answer);
 
             }
 
