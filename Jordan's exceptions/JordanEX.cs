@@ -114,10 +114,14 @@ namespace JordansExceptions
                 //ui.FillArrayCoefficientsAndAnswersSystemEquationsAndCoofs(Matrix, Answers, FCoofs);
                 artificialBasisMethod.CalculationGCoofficients(Matrix, Answers, FCoofs, GCoofs);
 
-                Console.Write("Это элементы строки G");
-                ui.MatrixWrite(GCoofs);
+                Console.Write("Это элементы Matrix");
+                ui.MatrixWrite(Matrix);
                 Console.Write("Это элементы Answers");
                 ui.MatrixWrite(Answers);
+                Console.Write("Это элементы строки F");
+                ui.MatrixWrite(FCoofs);
+                Console.Write("Это элементы строки G");
+                ui.MatrixWrite(GCoofs);
                 //int counter = 0;
                 while (true)
                 {
@@ -132,10 +136,10 @@ namespace JordansExceptions
                     //}
                     int[] IndexesResolvingElem = artificialBasisMethod.FindIndexesResolvingElement(Matrix, Answers, FCoofs, GCoofs);
                     //counter++;
-                    Console.Write("\n\n=================================\n\n");
+                    Console.Write("\n\n=================================\n");
                     Console.Write("Координаты разрешающего элемента");
                     ui.MatrixWrite(IndexesResolvingElem);
-                    Console.Write("\n\n=================================\n\n");
+                    Console.Write("\n=================================\n\n");
 
 
                     // 1) НА ШАГЕ (7) ВСЕ С'j НЕ РАВНЫ НУЛЮ; - (Такого не будет)
@@ -178,10 +182,17 @@ namespace JordansExceptions
                                                             FCoofs, GCoofs, DependentVariables, IndependentElems);
                     }
 
-                    Console.Write("\n\n=================================\n\n");
+                    Console.Write("\n\n=================================\n");
+
+                    Console.Write("Это индексы верхних иксов");
+                    ui.MatrixWrite(IndependentElems);
+
                     Console.Write("Это элементы Matrix");
                     ui.MatrixWrite(Matrix);
-                    
+
+                    Console.Write("Это индексы левых иксов");
+                    ui.MatrixWrite(DependentVariables);
+
                     Console.Write("Это элементы Answers");
                     ui.MatrixWrite(Answers);
 
@@ -190,22 +201,10 @@ namespace JordansExceptions
 
                     Console.Write("Это элементы строки G");
                     ui.MatrixWrite(GCoofs);
-
-                    Console.Write("Это индексы верхних иксов");
-                    ui.MatrixWrite(IndependentElems);
-
-                    Console.Write("Это индексы левых иксов");
-                    ui.MatrixWrite(DependentVariables);
-                    Console.Write("\n\n=================================\n\n");
+                    
+                    Console.Write("\n=================================");
 
                 }
-
-                // Решение проблемы экспоненциальных чисел
-                Console.Write("\n\n\n\n");
-                double test = 4.0/3345675477373.0;
-                double answer = Convert.ToDouble(test.ToString("0.####"));
-                Console.WriteLine(test);
-                Console.WriteLine(answer);
 
             }
 
