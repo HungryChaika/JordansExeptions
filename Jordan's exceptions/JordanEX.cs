@@ -102,20 +102,20 @@ namespace JordansExceptions
                 ui.MatrixWrite(DependentVariables);
 
                 // MOCKS
-                //double[,] Matrix = {
-                //    { 1, -4, 2, -5, 9 },
-                //    { 0, 1, -3, 4, -5 },
-                //    { 0, 1, -1, 1, -1 }
-                //};
-                //double[] Answers = { 3, 6, 1, 0, 0 };
-                //double[] FCoofs = { 2, 6, -5, 1, 4 };
                 double[,] Matrix = {
-                    { 0, -1, 1, 1, 0 },
-                    { -5, 1, 1, 0, 0 },
-                    { -8, 1, 2, 0, -1 }
+                    { 1, -4, 2, -5, 9 },
+                    { 0, 1, -3, 4, -5 },
+                    { 0, 1, -1, 1, -1 }
                 };
-                double[] Answers = { 1, 2, 3, 0, 0 };
-                double[] FCoofs = { 3, -1, -4, 0, 0 };
+                double[] Answers = { 3, 6, 1, 0, 0 };
+                double[] FCoofs = { 2, 6, -5, 1, 4 };
+                //double[,] Matrix = {
+                //    { 0, -1, 1, 1, 0 },
+                //    { -5, 1, 1, 0, 0 },
+                //    { -8, 1, 2, 0, -1 }
+                //};
+                //double[] Answers = { 1, 2, 3, 0, 0 };
+                //double[] FCoofs = { 3, -1, -4, 0, 0 };
                 // *****
 
                 //ui.FillArrayCoefficientsAndAnswersSystemEquationsAndCoofs(Matrix, Answers, FCoofs);

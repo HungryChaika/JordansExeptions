@@ -39,7 +39,6 @@ namespace JordansExceptions
             //{
             //    return new int[2] { 0, 0 };
             //}
-
             bool FlagGCoofsHaveNotNegativeNumbers = true;
             bool FlagGCoofsHaveZeroNumbers = false;
             bool[] IndexsZeroNumbersInGCoofs = new bool[GCoofs.Length];
@@ -185,23 +184,32 @@ namespace JordansExceptions
             double[] FuncFCoofs = new double[MaxDegree];
             double[] FuncGCoofs = new double[MaxDegree];
 
+            double Limit = 0.000001;
+
             for (int i = 0; i < NumberEquation; i++)
             {
                 for (int j = 0; j < MaxDegree; j++)
                 {
-                    if (i == XCoord)
-                    {
-                        FuncElems[i, j] = Elems[i, j] / Elems[XCoord, YCoord];
-                    }
-                    if (j == YCoord && i != XCoord)
-                    {
-                        FuncElems[i, j] = Elems[i, j] / Elems[XCoord, YCoord] * (-1);
-                    }
                     if (i != XCoord && j != YCoord)
                     {
                         FuncElems[i, j] = (Elems[i, j] * Elems[XCoord, YCoord] - Elems[XCoord, j] * Elems[i, YCoord]) / Elems[XCoord, YCoord];
                     }
-                    FuncElems[i, j] = Convert.ToDouble(FuncElems[i, j].ToString("0.##"));
+                    else if (i == XCoord && j != YCoord)
+                    {
+                        FuncElems[i, j] = Elems[i, j] / Elems[XCoord, YCoord];
+                    }
+                    else if (i != XCoord && j == YCoord)
+                    {
+                        FuncElems[i, j] = Elems[i, j] / Elems[XCoord, YCoord] * (-1);
+                    } else if (i == XCoord && j == YCoord)
+                    {
+                        FuncElems[i, j] = 1 / Elems[XCoord, YCoord];
+                    }
+                    //FuncElems[i, j] = Convert.ToDouble(FuncElems[i, j].ToString("0.##"));
+                    if(FuncElems[i, j] < Limit && FuncElems[i, j] > -Limit)
+                    {
+                        FuncElems[i, j] = 0;
+                    }
                 }
                 if (i == XCoord)
                 {
@@ -211,13 +219,25 @@ namespace JordansExceptions
                 {
                     FuncAnswers[i] = (Answers[i] * Elems[XCoord, YCoord] - Answers[XCoord] * Elems[i, YCoord]) / Elems[XCoord, YCoord];
                 }
-                FuncAnswers[i] = Convert.ToDouble(FuncAnswers[i].ToString("0.##"));
+                //FuncAnswers[i] = Convert.ToDouble(FuncAnswers[i].ToString("0.##"));
+                if (FuncAnswers[i] < Limit && FuncAnswers[i] > -Limit)
+                {
+                    FuncAnswers[i] = 0;
+                }
             }
             FuncAnswers[NumberEquation] = (Answers[NumberEquation] * Elems[XCoord, YCoord] - Answers[XCoord] * FCoofs[YCoord]) / Elems[XCoord, YCoord];
-            FuncAnswers[NumberEquation] = Convert.ToDouble(FuncAnswers[NumberEquation].ToString("0.##"));
+            //FuncAnswers[NumberEquation] = Convert.ToDouble(FuncAnswers[NumberEquation].ToString("0.##"));
+            if (FuncAnswers[NumberEquation] < Limit && FuncAnswers[NumberEquation] > -Limit)
+            {
+                FuncAnswers[NumberEquation] = 0;
+            }
 
             FuncAnswers[NumberEquation + 1] = (Answers[NumberEquation + 1] * Elems[XCoord, YCoord] - Answers[XCoord] * GCoofs[YCoord]) / Elems[XCoord, YCoord];
-            FuncAnswers[NumberEquation + 1] = Convert.ToDouble(FuncAnswers[NumberEquation + 1].ToString("0.##"));
+            //FuncAnswers[NumberEquation + 1] = Convert.ToDouble(FuncAnswers[NumberEquation + 1].ToString("0.##"));
+            if (FuncAnswers[NumberEquation + 1] < Limit && FuncAnswers[NumberEquation + 1] > -Limit)
+            {
+                FuncAnswers[NumberEquation + 1] = 0;
+            }
 
             for (int k = 0; k < MaxDegree; k++)
             {
@@ -231,8 +251,16 @@ namespace JordansExceptions
                     FuncFCoofs[k] = (FCoofs[k] * Elems[XCoord, YCoord] - FCoofs[YCoord] * Elems[XCoord, k]) / Elems[XCoord, YCoord];
                     FuncGCoofs[k] = (GCoofs[k] * Elems[XCoord, YCoord] - GCoofs[YCoord] * Elems[XCoord, k]) / Elems[XCoord, YCoord];
                 }
-                FuncFCoofs[k] = Convert.ToDouble(FuncFCoofs[k].ToString("0.##"));
-                FuncGCoofs[k] = Convert.ToDouble(FuncGCoofs[k].ToString("0.##"));
+                //FuncFCoofs[k] = Convert.ToDouble(FuncFCoofs[k].ToString("0.##"));
+                if (FuncFCoofs[k] < Limit && FuncFCoofs[k] > -Limit)
+                {
+                    FuncFCoofs[k] = 0;
+                }
+                //FuncGCoofs[k] = Convert.ToDouble(FuncGCoofs[k].ToString("0.##"));
+                if (FuncGCoofs[k] < Limit && FuncGCoofs[k] > -Limit)
+                {
+                    FuncGCoofs[k] = 0;
+                }
             }
 
             int Item = IndependentElems[YCoord];
