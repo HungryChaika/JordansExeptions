@@ -194,6 +194,11 @@ namespace JordansExceptions
             }
         }
 
+        public void DrawTransportTaskTable(int QuantitySpaces)
+        {
+
+        }
+
         public void MatrixWrite<T>(T[,] Matrix)
         {
             Console.WriteLine("\n\n");

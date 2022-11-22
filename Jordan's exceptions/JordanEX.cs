@@ -8,10 +8,10 @@ namespace JordansExceptions
         {
             UI ui = new UI();
             Console.WriteLine("\nВыберите метод:\n");
-            Console.WriteLine("1) Метод Жордана;\n2) Метод искусственного базиса;\n");
+            Console.WriteLine("1) Метод Жордана;\n2) Метод искусственного базиса;\n3) Транспортная задача;\n");
             Console.Write("Выбор: ");
-            int SelectedMethod = ui.CheckAndReadCorrectNumInput(2, 1);
-            if (SelectedMethod == 1)
+            int SelectedMethod = ui.CheckAndReadCorrectNumInput(3, 1);
+            if (SelectedMethod == 1) // Метод Жордановых исключений
             {
                 Console.WriteLine("\nМЕТОД ЖОРДАНОВЫХ ИСКЛЮЧЕНИЙ;\n");
                 Console.Write("размерность системы или max n среди всех x^n: ");
@@ -61,7 +61,7 @@ namespace JordansExceptions
                 }
 
             }
-            else if (SelectedMethod == 2)
+            else if (SelectedMethod == 2) // Сисплекс метод
             {
                 Console.WriteLine("\nМЕТОД ИСКУССТВЕННОГО БАЗИСА;\n");
                 Console.Write("размерность системы или max n среди всех x^n: ");
@@ -229,6 +229,64 @@ namespace JordansExceptions
                     Console.Write("\n=================================");
 
                 }
+
+            }
+            else if (SelectedMethod == 3) // Транспортная задача
+            {
+                TransportTask transportTask = new TransportTask();
+                int QuantitySpaces = -1;
+
+                Console.Write("\n\nВведите количество Производителей: ");
+                int NumberManufacturers = ui.CheckAndReadCorrectNumInput();
+                int[] Manufacturers = new int[NumberManufacturers];
+
+                for (int i = 0; i < NumberManufacturers; i++)
+                {
+                    Console.Write($"\nПроизведено товара на A{i + 1} = ");
+                    int ElemManufacturers = ui.CheckAndReadCorrectNumInput(int.MaxValue, 0);
+                    Manufacturers[i] = ElemManufacturers;
+                    int PotencialQuantitySpaces = ElemManufacturers.ToString().Length;
+                    if (QuantitySpaces < ElemManufacturers.ToString().Length)
+                    {
+                        QuantitySpaces = PotencialQuantitySpaces;
+                    }
+                }
+
+                Console.Write("\n\nВведите количество Потребителей: ");
+                int NumberConsumers = ui.CheckAndReadCorrectNumInput();
+                int[] Consumers = new int[NumberConsumers];
+
+                for (int i = 0; i < NumberConsumers; i++)
+                {
+                    Console.Write($"\nПроизведено товара на alpha{i + 1} = ");
+                    int ElemConsumers = ui.CheckAndReadCorrectNumInput(int.MaxValue, 0);
+                    Consumers[i] = ElemConsumers;
+                    int PotencialQuantitySpaces = ElemConsumers.ToString().Length;
+                    if (QuantitySpaces < ElemConsumers.ToString().Length)
+                    {
+                        QuantitySpaces = PotencialQuantitySpaces;
+                    }
+                }
+
+                Console.Write("\n\nВведите тарифы:\n\n");
+                int[,] CellsRates = new int[NumberManufacturers, NumberConsumers];
+                for (int i = 0; i < NumberManufacturers; i++)
+                {
+                    for (int j = 0; j < NumberConsumers; j++)
+                    {
+                        Console.Write($"\nТариф на пересечении A{i + 1} и alpha{j + 1}: ");
+                        int Rate = ui.CheckAndReadCorrectNumInput(int.MaxValue, 0);
+                        CellsRates[i, j] = Rate;
+                    }
+                }
+
+                ui.MatrixWrite(CellsRates);
+                Console.WriteLine(QuantitySpaces);
+
+                //Ищу альфу в кодировках
+                Console.WriteLine("***********" + "\n\n" + (char)224 + "\n\n" + "***********");
+
+                // Можно переместить подготовку значений в TransportTask
 
             }
 
