@@ -5,15 +5,15 @@ namespace JordansExceptions
     public class TransportTask
     {
         UI ui;
-        public int QuantitySpaces = -1;
-        public int NumberManufacturers;
-        public int[] Manufacturers;
-        public int NumberConsumers;
-        public int[] Consumers;
-        public int[,] CellsRates;
-        public int[,] CellsContent;
-        public bool[,] CellsFlagContent;
-        public int[] IndexMinRate = { -1, -1 };
+        private int QuantitySpaces = -1;
+        private int NumberManufacturers;
+        private int[] Manufacturers;
+        private int NumberConsumers;
+        private int[] Consumers;
+        private int[,] CellsRates;
+        private int[,] CellsContent;
+        private bool[,] CellsFlagContent;
+        private int[] IndexMinRate = { -1, -1 };
 
         public TransportTask(UI ui)
         {
@@ -29,10 +29,11 @@ namespace JordansExceptions
             CellsRates = new int[,] { { 2, 1, 3, 2 }, { 2, 3, 3, 1 }, { 3, 2, 2, 1 } };
             CellsContent = new int[,] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
             CellsFlagContent = new bool[,] {
-                { false, false, false, false },
-                { false, false, false, false },
-                { false, false, false, false }
+                { true, true, true, true },
+                { true, true, true, true },
+                { true, true, true, true }
             };
+            IndexMinRate = new int[] { 1, 3 };
         }
 
         public void TaskInit()
@@ -89,15 +90,70 @@ namespace JordansExceptions
             {
                 for (int j = 0; j < NumberConsumers; j++)
                 {
-                    CellsFlagContent[i, j] = false;
+                    CellsFlagContent[i, j] = true;
                 }
             }
         }
 
         public void Step()
         {
-
+            int Content = (Manufacturers[IndexMinRate[0]] < Consumers[IndexMinRate[1]]) ? Manufacturers[IndexMinRate[0]] : Consumers[IndexMinRate[1]];
+            CellsFlagContent[IndexMinRate[0], IndexMinRate[1]] = false;
+            Manufacturers[IndexMinRate[0]] -= Content;
+            Consumers[IndexMinRate[1]] -= Content;
+            CellsContent[IndexMinRate[0], IndexMinRate[1]] = Content;
         }
 
+        public bool FindNextMinRate()
+        {
+            int[] OldIndex = new int[] { IndexMinRate[0], IndexMinRate[1] };
+            if (Manufacturers[IndexMinRate[0]] > 0)
+            {
+                // проходимся по строке;
+                for (int i = 0; i < NumberConsumers; i++)
+                {
+                    if (CellsFlagContent[IndexMinRate[0], i] && Consumers[i] != 0)
+                    {
+                        if (IndexMinRate[1] == OldIndex[1] || CellsRates[IndexMinRate[0], i] < CellsRates[IndexMinRate[0], IndexMinRate[1]])
+                        {
+                            IndexMinRate[1] = i;
+                        }
+                    }
+                }
+            }
+            else if (Consumers[IndexMinRate[1]] > 0)
+            {
+                // проходим по столбцу;
+                for (int j = 0; j < NumberManufacturers; j++)
+                {
+
+                    if (CellsFlagContent[j, IndexMinRate[1]] && Manufacturers[j] != 0)
+                    {
+                        if (IndexMinRate[0] == OldIndex[0] || CellsRates[j, IndexMinRate[1]] < CellsRates[IndexMinRate[0], IndexMinRate[1]])
+                        {
+                            IndexMinRate[0] = j;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // конец;
+                Console.WriteLine("\n\nКОНЕЦ\n\n");
+                return true;
+            }
+            return false;
+        }
+
+        public void CheckIntermediateResult()
+        {
+            ui.MatrixWrite(Consumers);
+            ui.MatrixWrite(Manufacturers);
+            ui.MatrixWrite(CellsRates);
+            ui.MatrixWrite(CellsContent);
+            ui.MatrixWrite(CellsFlagContent);
+            ui.MatrixWrite(IndexMinRate);
+            //Console.WriteLine(QuantitySpaces);
+        }
     }
 }

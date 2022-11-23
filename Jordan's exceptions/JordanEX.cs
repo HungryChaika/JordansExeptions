@@ -235,19 +235,28 @@ namespace JordansExceptions
             else if (SelectedMethod == 3) // Транспортная задача
             {
                 TransportTask transportTask = new TransportTask(ui);
-                //transportTask.TaskInit();
-                transportTask.TaskInitTest();
+                transportTask.TaskInit();
+                //transportTask.TaskInitTest();
 
-
-                ui.MatrixWrite(transportTask.Consumers);
-                ui.MatrixWrite(transportTask.Manufacturers);
-                ui.MatrixWrite(transportTask.CellsRates);
-                ui.MatrixWrite(transportTask.CellsContent);
-                ui.MatrixWrite(transportTask.CellsFlagContent);
-                Console.WriteLine(transportTask.QuantitySpaces);
-                ui.MatrixWrite(transportTask.IndexMinRate);
-                
-                
+                transportTask.CheckIntermediateResult();
+                while (true)
+                {
+                    Console.Write("\n\n******************************************************************\n\n");
+                    transportTask.Step();
+                    bool Result = transportTask.FindNextMinRate();
+                    transportTask.CheckIntermediateResult();
+                    if (Result)
+                    {
+                        break;
+                    }
+                    //while (true)
+                    //{
+                    //    if (Console.ReadKey(true).Key == ConsoleKey.Enter)
+                    //    {
+                    //        break;
+                    //    }
+                    //}
+                }
 
             }
 
