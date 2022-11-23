@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace JordansExceptions
 {
@@ -233,60 +234,20 @@ namespace JordansExceptions
             }
             else if (SelectedMethod == 3) // Транспортная задача
             {
-                TransportTask transportTask = new TransportTask();
-                int QuantitySpaces = -1;
+                TransportTask transportTask = new TransportTask(ui);
+                //transportTask.TaskInit();
+                transportTask.TaskInitTest();
 
-                Console.Write("\n\nВведите количество Производителей: ");
-                int NumberManufacturers = ui.CheckAndReadCorrectNumInput();
-                int[] Manufacturers = new int[NumberManufacturers];
 
-                for (int i = 0; i < NumberManufacturers; i++)
-                {
-                    Console.Write($"\nПроизведено товара на A{i + 1} = ");
-                    int ElemManufacturers = ui.CheckAndReadCorrectNumInput(int.MaxValue, 0);
-                    Manufacturers[i] = ElemManufacturers;
-                    int PotencialQuantitySpaces = ElemManufacturers.ToString().Length;
-                    if (QuantitySpaces < ElemManufacturers.ToString().Length)
-                    {
-                        QuantitySpaces = PotencialQuantitySpaces;
-                    }
-                }
-
-                Console.Write("\n\nВведите количество Потребителей: ");
-                int NumberConsumers = ui.CheckAndReadCorrectNumInput();
-                int[] Consumers = new int[NumberConsumers];
-
-                for (int i = 0; i < NumberConsumers; i++)
-                {
-                    Console.Write($"\nПроизведено товара на alpha{i + 1} = ");
-                    int ElemConsumers = ui.CheckAndReadCorrectNumInput(int.MaxValue, 0);
-                    Consumers[i] = ElemConsumers;
-                    int PotencialQuantitySpaces = ElemConsumers.ToString().Length;
-                    if (QuantitySpaces < ElemConsumers.ToString().Length)
-                    {
-                        QuantitySpaces = PotencialQuantitySpaces;
-                    }
-                }
-
-                Console.Write("\n\nВведите тарифы:\n\n");
-                int[,] CellsRates = new int[NumberManufacturers, NumberConsumers];
-                for (int i = 0; i < NumberManufacturers; i++)
-                {
-                    for (int j = 0; j < NumberConsumers; j++)
-                    {
-                        Console.Write($"\nТариф на пересечении A{i + 1} и alpha{j + 1}: ");
-                        int Rate = ui.CheckAndReadCorrectNumInput(int.MaxValue, 0);
-                        CellsRates[i, j] = Rate;
-                    }
-                }
-
-                ui.MatrixWrite(CellsRates);
-                Console.WriteLine(QuantitySpaces);
-
-                //Ищу альфу в кодировках
-                Console.WriteLine("***********" + "\n\n" + (char)224 + "\n\n" + "***********");
-
-                // Можно переместить подготовку значений в TransportTask
+                ui.MatrixWrite(transportTask.Consumers);
+                ui.MatrixWrite(transportTask.Manufacturers);
+                ui.MatrixWrite(transportTask.CellsRates);
+                ui.MatrixWrite(transportTask.CellsContent);
+                ui.MatrixWrite(transportTask.CellsFlagContent);
+                Console.WriteLine(transportTask.QuantitySpaces);
+                ui.MatrixWrite(transportTask.IndexMinRate);
+                
+                
 
             }
 

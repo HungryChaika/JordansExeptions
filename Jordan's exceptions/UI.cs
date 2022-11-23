@@ -210,7 +210,8 @@ namespace JordansExceptions
                 }
                 Console.WriteLine("\n");
             }
-            Console.WriteLine("\nДлина: " + Matrix.Length + "\n");
+            //Console.WriteLine("\nДлина: " + Matrix.Length + "\n\n");
+            Console.Write("\n\n");
         }
 
         public void MatrixWrite<T>(T[] Matrix)
