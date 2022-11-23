@@ -1,4 +1,5 @@
 ﻿using System;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace JordansExceptions
 {
@@ -14,6 +15,8 @@ namespace JordansExceptions
         private int[,] CellsContent;
         private bool[,] CellsFlagContent;
         private int[] IndexMinRate = { -1, -1 };
+        private double[] PotentialsManufacturers;
+        private double[] PotentialsConsumers;
 
         public TransportTask(UI ui)
         {
@@ -26,7 +29,7 @@ namespace JordansExceptions
             Manufacturers = new int[] { 90, 70, 50 };
             NumberConsumers = 4;
             Consumers = new int[] { 80, 60, 40, 30 };
-            CellsRates = new int[,] { { 2, 1, 3, 2 }, { 2, 3, 3, 1 }, { 3, 2, 2, 1 } };
+            CellsRates = new int[,] { { 2, 1, 3, 2 }, { 2, 3, 3, 1 }, { 3, 3, 2, 1 } };
             CellsContent = new int[,] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
             CellsFlagContent = new bool[,] {
                 { true, true, true, true },
@@ -145,6 +148,56 @@ namespace JordansExceptions
             return false;
         }
 
+        public void FindPotentials()
+        {
+            PotentialsManufacturers = new double[NumberManufacturers];
+            Array.Fill(PotentialsManufacturers, double.NaN);
+            bool[] FlagsPotentialsManufacturers = new bool[NumberManufacturers];
+            Array.Fill(FlagsPotentialsManufacturers, true);
+
+            PotentialsConsumers = new double[NumberConsumers];
+            Array.Fill(PotentialsConsumers, double.NaN);
+            bool[] FlagsPotentialsConsumers = new bool[NumberConsumers];
+            Array.Fill(FlagsPotentialsConsumers, true);
+
+            PotentialsManufacturers[0] = 0;
+            FlagsPotentialsManufacturers[0] = false;
+
+            while (true)
+            {
+                for (int i = 0; i < NumberManufacturers; i++)
+                {
+                    for (int j = 0; j < NumberConsumers; j++)
+                    {
+                        if (FlagsPotentialsConsumers[j] && !CellsFlagContent[i,j] && PotentialsManufacturers[i] is not double.NaN)
+                        {
+                            PotentialsConsumers[j] = CellsRates[i, j] - PotentialsManufacturers[i];
+                            FlagsPotentialsConsumers[j] = false;
+                        }
+                    }
+                }
+                for (int j = 0; j < NumberConsumers; j++)
+                {
+                    for (int i = 0; i < NumberManufacturers; i++)
+                    {
+                        if (FlagsPotentialsManufacturers[i] && !CellsFlagContent[i, j] && PotentialsConsumers[j] is not double.NaN)
+                        {
+                            PotentialsManufacturers[i] = CellsRates[i, j] - PotentialsConsumers[j];
+                            FlagsPotentialsManufacturers[i] = false;
+                        }
+                    }
+                }
+                if (Array.IndexOf(PotentialsConsumers, double.NaN) == -1 && Array.IndexOf(PotentialsManufacturers, double.NaN) == -1)
+                {
+                    break;
+                }
+            }
+            Console.Write("\n\nManufacturers:\n");
+            ui.MatrixWrite(PotentialsManufacturers);
+            Console.Write("\n\nConsumers:\n");
+            ui.MatrixWrite(PotentialsConsumers);
+        }
+
         public void CheckIntermediateResult()
         {
             ui.MatrixWrite(Consumers);
@@ -154,6 +207,19 @@ namespace JordansExceptions
             ui.MatrixWrite(CellsFlagContent);
             ui.MatrixWrite(IndexMinRate);
             //Console.WriteLine(QuantitySpaces);
+        }
+
+        public int CalculateF()
+        {
+            int F = 0;
+            for (int i = 0; i < NumberManufacturers; i++)
+            {
+                for (int j = 0; j < NumberConsumers; j++)
+                {
+                    F += CellsContent[i,j] * CellsRates[i,j];
+                }
+            }
+            return F;
         }
     }
 }

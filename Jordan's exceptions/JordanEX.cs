@@ -247,6 +247,8 @@ namespace JordansExceptions
                     transportTask.CheckIntermediateResult();
                     if (Result)
                     {
+                        Console.Write("Ф-ия F = " + transportTask.CalculateF() + ";\n\n");
+                        transportTask.FindPotentials();
                         break;
                     }
                     //while (true)
