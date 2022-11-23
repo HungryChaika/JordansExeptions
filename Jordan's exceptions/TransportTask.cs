@@ -6,7 +6,6 @@ namespace JordansExceptions
     public class TransportTask
     {
         UI ui;
-        private int QuantitySpaces = -1;
         private int NumberManufacturers;
         private int[] Manufacturers;
         private int NumberConsumers;
@@ -50,10 +49,6 @@ namespace JordansExceptions
                 int ElemManufacturers = ui.CheckAndReadCorrectNumInput(int.MaxValue, 0);
                 Manufacturers[i] = ElemManufacturers;
                 int PotencialQuantitySpaces = ElemManufacturers.ToString().Length;
-                if (QuantitySpaces < ElemManufacturers.ToString().Length)
-                {
-                    QuantitySpaces = PotencialQuantitySpaces;
-                }
             }
             Console.Write("\n\nВведите количество Потребителей: ");
             NumberConsumers = ui.CheckAndReadCorrectNumInput();
@@ -64,10 +59,6 @@ namespace JordansExceptions
                 int ElemConsumers = ui.CheckAndReadCorrectNumInput(int.MaxValue, 0);
                 Consumers[i] = ElemConsumers;
                 int PotencialQuantitySpaces = ElemConsumers.ToString().Length;
-                if (QuantitySpaces < ElemConsumers.ToString().Length)
-                {
-                    QuantitySpaces = PotencialQuantitySpaces;
-                }
             }
             Console.Write("\n\nВведите тарифы:\n\n");
             CellsRates = new int[NumberManufacturers, NumberConsumers];
@@ -198,6 +189,29 @@ namespace JordansExceptions
             ui.MatrixWrite(PotentialsConsumers);
         }
 
+        public int[] CheckPotentials()
+        {
+            int MinDifference = int.MaxValue;
+            int[] IndexCellsMinDifference = { -1, -1 };
+            for (int i = 0; i < NumberManufacturers; i++)
+            {
+                for (int j = 0; j < NumberConsumers; j++)
+                {
+                    if (CellsFlagContent[i,j])
+                    {
+                        int Difference = (int)(CellsRates[i, j] - PotentialsManufacturers[i] - PotentialsConsumers[j]);
+                        if (Difference < 0 && Difference < MinDifference)
+                        {
+                            MinDifference = Difference;
+                            IndexCellsMinDifference[0] = i;
+                            IndexCellsMinDifference[1] = j;
+                        }
+                    }
+                }
+            }
+            return IndexCellsMinDifference;
+        }
+
         public void CheckIntermediateResult()
         {
             ui.MatrixWrite(Consumers);
@@ -206,7 +220,6 @@ namespace JordansExceptions
             ui.MatrixWrite(CellsContent);
             ui.MatrixWrite(CellsFlagContent);
             ui.MatrixWrite(IndexMinRate);
-            //Console.WriteLine(QuantitySpaces);
         }
 
         public int CalculateF()

@@ -235,8 +235,8 @@ namespace JordansExceptions
             else if (SelectedMethod == 3) // Транспортная задача
             {
                 TransportTask transportTask = new TransportTask(ui);
-                transportTask.TaskInit();
-                //transportTask.TaskInitTest();
+                //transportTask.TaskInit();
+                transportTask.TaskInitTest();
 
                 transportTask.CheckIntermediateResult();
                 while (true)
@@ -249,17 +249,20 @@ namespace JordansExceptions
                     {
                         Console.Write("Ф-ия F = " + transportTask.CalculateF() + ";\n\n");
                         transportTask.FindPotentials();
-                        break;
+                        int[] IndexCell = transportTask.CheckPotentials();
+                        Console.Write(IndexCell[0] + "   " + IndexCell[1]);
+                        if (IndexCell[0] == -1 && IndexCell[1] == -1)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            //break;
+                            //Поиски контура
+                        }
                     }
-                    //while (true)
-                    //{
-                    //    if (Console.ReadKey(true).Key == ConsoleKey.Enter)
-                    //    {
-                    //        break;
-                    //    }
-                    //}
                 }
-
+                //Ответ
             }
 
         }
