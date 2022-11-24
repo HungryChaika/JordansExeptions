@@ -35,6 +35,19 @@ namespace JordansExceptions
                 { true, true, true, true }
             };
             IndexMinRate = new int[] { 1, 3 };
+            //NumberManufacturers = 4;
+            //Manufacturers = new int[] { 85, 112, 72, 120 };
+            //NumberConsumers = 5;
+            //Consumers = new int[] { 75, 125, 64, 65, 60 };
+            //CellsRates = new int[,] { { 7, 1, 4, 5, 2 }, { 13, 4, 7, 6, 3 }, { 3, 8, 0, 18, 12 }, { 9, 5, 3, 4, 7 } };
+            //CellsContent = new int[,] { { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 } };
+            //CellsFlagContent = new bool[,] {
+            //    { true, true, true, true, true },
+            //    { true, true, true, true, true },
+            //    { true, true, true, true, true },
+            //    { true, true, true, true, true }
+            //};
+            //IndexMinRate = new int[] { 2, 2 };
         }
 
         public void TaskInit()
@@ -101,8 +114,7 @@ namespace JordansExceptions
         {
             int[] OldIndex = new int[] { IndexMinRate[0], IndexMinRate[1] };
             if (Manufacturers[IndexMinRate[0]] > 0)
-            {
-                // проходимся по строке;
+            {// проходимся по строке;
                 for (int i = 0; i < NumberConsumers; i++)
                 {
                     if (CellsFlagContent[IndexMinRate[0], i] && Consumers[i] != 0)
@@ -115,8 +127,7 @@ namespace JordansExceptions
                 }
             }
             else if (Consumers[IndexMinRate[1]] > 0)
-            {
-                // проходим по столбцу;
+            {// проходим по столбцу;
                 for (int j = 0; j < NumberManufacturers; j++)
                 {
 
@@ -130,9 +141,7 @@ namespace JordansExceptions
                 }
             }
             else
-            {
-                // конец;
-                Console.WriteLine("\n\nКОНЕЦ\n\n");
+            {// конец;
                 return true;
             }
             return false;
@@ -227,6 +236,12 @@ namespace JordansExceptions
             ui.MatrixWrite(IndexMinRate);
         }
 
+        public void DrawFinalAnswer()
+        {
+            Console.Write("\nЗначения таблицы:\n");
+            ui.MatrixWrite(CellsContent);
+        }
+
         public int CalculateF()
         {
             int F = 0;
@@ -240,7 +255,7 @@ namespace JordansExceptions
             return F;
         }
 
-        public void FindContour(int[] StartCell)
+        public void FindAndUseContour(int[] StartCell)
         {
             int[] ContourPath = new int[(NumberConsumers + NumberManufacturers) * 2];
             Array.Fill(ContourPath, -1);
@@ -249,6 +264,19 @@ namespace JordansExceptions
             bool Answer = StepContour(StartCell, ContourPath , "horizontal");
             Console.Write("\n\nКонтур:");
             ui.MatrixWrite(ContourPath);
+            int MinElem = FindMinElemContour(ContourPath);
+            Console.Write($"\n\nМинимальный элемент:\n\n{MinElem}\n");
+            for (int i = 0; i < ContourPath.Length; i += 2)
+            {
+                if (ContourPath[i] != -1 && ContourPath[i + 1] != -1)
+                {
+                    CellsContent[ContourPath[i], ContourPath[i + 1]] += MinElem * ((i / 2) % 2 == 0 ? 1 : (-1));
+                    CellsFlagContent[ContourPath[i], ContourPath[i + 1]] =
+                        (CellsContent[ContourPath[i], ContourPath[i + 1]] > 0 ? false : true);
+                }
+            }
+            Console.Write("\n\nОбновлённый план:");
+            ui.MatrixWrite(CellsContent);
         }
 
         private bool StepContour(int[] PreviousCell, int[] ContourPath, string mode)
@@ -377,16 +405,41 @@ namespace JordansExceptions
             return false;
         }
 
-        private bool CheckContourPath(int[] Cell, int[] ContourPath)
+        private int FindMinElemContour(int[] ContourPath)
         {
+            int MinElem = int.MaxValue;
             for (int i = 0; i < ContourPath.Length; i += 2)
             {
-                if (Cell[0] == ContourPath[i] && Cell[1] == ContourPath[i + 1])
+                int Elem = int.MaxValue;
+                if (ContourPath[i] != -1 && ContourPath[i + 1] != -1)
                 {
-                    return true;
+                    if ((i / 2) % 2 != 0)
+                    {
+                        Elem = CellsContent[ContourPath[i], ContourPath[i + 1]];
+                    }
+                }
+                else
+                {
+                    return MinElem;
+                }
+                if (!CellsFlagContent[ContourPath[i], ContourPath[i + 1]] && Elem < MinElem)
+                {
+                    MinElem = CellsContent[ContourPath[i], ContourPath[i + 1]];
                 }
             }
-            return false;
+            return MinElem;
         }
+
+        //private bool CheckContourPath(int[] Cell, int[] ContourPath)
+        //{
+        //    for (int i = 0; i < ContourPath.Length; i += 2)
+        //    {
+        //        if (Cell[0] == ContourPath[i] && Cell[1] == ContourPath[i + 1])
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
     }
 }

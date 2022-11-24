@@ -235,37 +235,42 @@ namespace JordansExceptions
             else if (SelectedMethod == 3) // Транспортная задача
             {
                 TransportTask transportTask = new TransportTask(ui);
-                //transportTask.TaskInit();
-                transportTask.TaskInitTest();
-
+                transportTask.TaskInit();
+                //transportTask.TaskInitTest();
                 transportTask.CheckIntermediateResult();
                 while (true)
-                {
+                {//Создание плана
                     Console.Write("\n\n******************************************************************\n\n");
                     transportTask.Step();
                     bool Result = transportTask.FindNextMinRate();
                     transportTask.CheckIntermediateResult();
                     if (Result)
                     {
-                        Console.Write("\n\n******************************************************************\n");
-                        Console.Write("******************************************************************\n\n");
-                        Console.Write("Ф-ия F = " + transportTask.CalculateF() + ";\n\n");
-                        transportTask.FindPotentials();
-                        int[] IndexCell = transportTask.CheckPotentials();
-                        Console.Write($"Точка старта контура: {IndexCell[0]} , {IndexCell[1]}");
-                        if (IndexCell[0] == -1 && IndexCell[1] == -1)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            transportTask.FindContour(IndexCell);
-                            break;
-                            //Поиски контура
-                        }
+                        break;
                     }
                 }
-                //Ответ
+                while (true)
+                {//Оптимизация плана
+                    Console.Write("\n\n******************************************************************\n");
+                    Console.Write("******************************************************************\n\n");
+                    Console.Write("Ф-ия F = " + transportTask.CalculateF() + ";\n\n");
+                    transportTask.FindPotentials();
+                    int[] IndexCell = transportTask.CheckPotentials();
+                    if (IndexCell[0] == -1 && IndexCell[1] == -1)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        transportTask.FindAndUseContour(IndexCell);
+                    }
+                }
+                Console.Write("\n\n******************************************************************\n");
+                Console.Write("******************************************************************\n");
+                Console.Write("******************************************************************\n\n");
+                Console.Write("\nОТВЕТ:\n");
+                Console.Write("\nФ-ия F = " + transportTask.CalculateF() + ";\n");
+                transportTask.DrawFinalAnswer();
             }
 
         }
