@@ -1,5 +1,4 @@
 ﻿using System;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace JordansExceptions
 {
@@ -183,9 +182,9 @@ namespace JordansExceptions
                     break;
                 }
             }
-            Console.Write("\n\nManufacturers:\n");
+            Console.Write("\n\nПотенциалы Manufacturers:\n");
             ui.MatrixWrite(PotentialsManufacturers);
-            Console.Write("\n\nConsumers:\n");
+            Console.Write("\n\nПотенциалы Consumers:\n");
             ui.MatrixWrite(PotentialsConsumers);
         }
 
@@ -214,11 +213,17 @@ namespace JordansExceptions
 
         public void CheckIntermediateResult()
         {
+            Console.Write("\nПотребители:\n");
             ui.MatrixWrite(Consumers);
+            Console.Write("\nПроизводители:\n");
             ui.MatrixWrite(Manufacturers);
+            Console.Write("\nТарифы:\n");
             ui.MatrixWrite(CellsRates);
+            Console.Write("\nЗначения таблицы:\n");
             ui.MatrixWrite(CellsContent);
+            Console.Write("\nЗначения флагов таблицы:\n");
             ui.MatrixWrite(CellsFlagContent);
+            Console.Write("\nПозиция минимального тарифа:\n");
             ui.MatrixWrite(IndexMinRate);
         }
 
@@ -233,6 +238,155 @@ namespace JordansExceptions
                 }
             }
             return F;
+        }
+
+        public void FindContour(int[] StartCell)
+        {
+            int[] ContourPath = new int[(NumberConsumers + NumberManufacturers) * 2];
+            Array.Fill(ContourPath, -1);
+            ContourPath[0] = StartCell[0];
+            ContourPath[1] = StartCell[1];
+            bool Answer = StepContour(StartCell, ContourPath , "horizontal");
+            Console.Write("\n\nКонтур:");
+            ui.MatrixWrite(ContourPath);
+        }
+
+        private bool StepContour(int[] PreviousCell, int[] ContourPath, string mode)
+        {
+            int[] IndexCell = {-1, -1};
+            int FirstFreeIndex = Array.IndexOf(ContourPath, -1);
+            if (mode == "horizontal")
+            {
+                bool FlagFindAnswer = false;
+                for (int i = PreviousCell[1] + 1; i < NumberConsumers; i++)
+                {
+                    if (!CellsFlagContent[PreviousCell[0], i])
+                    {
+                        if (FirstFreeIndex > -1 && FirstFreeIndex + 1 < ContourPath.Length)
+                        {
+                            IndexCell[0] = PreviousCell[0];
+                            IndexCell[1] = i;
+                            ContourPath[FirstFreeIndex] = IndexCell[0];
+                            ContourPath[FirstFreeIndex + 1] = IndexCell[1];
+                            FlagFindAnswer = StepContour(IndexCell, ContourPath, "vertical");
+                            if (!FlagFindAnswer)
+                            {
+                                ContourPath[FirstFreeIndex] = -1;
+                                ContourPath[FirstFreeIndex + 1] = -1;
+                                IndexCell[0] = -1;
+                                IndexCell[1] = -1;
+                            }
+                        }
+                    }
+                    if (IndexCell[0] != -1 && IndexCell[1] != -1)
+                    {
+                        return true;
+                    }
+                }
+                if (!FlagFindAnswer)
+                {
+                    for (int i = PreviousCell[1] - 1; i >= 0; i--)
+                    {
+                        if (!CellsFlagContent[PreviousCell[0], i])
+                        {
+                            if (FirstFreeIndex > -1 && FirstFreeIndex + 1 < ContourPath.Length)
+                            {
+                                IndexCell[0] = PreviousCell[0];
+                                IndexCell[1] = i;
+                                ContourPath[FirstFreeIndex] = IndexCell[0];
+                                ContourPath[FirstFreeIndex + 1] = IndexCell[1];
+                                FlagFindAnswer = StepContour(IndexCell, ContourPath, "vertical");
+                                if (!FlagFindAnswer)
+                                {
+                                    ContourPath[FirstFreeIndex] = -1;
+                                    ContourPath[FirstFreeIndex + 1] = -1;
+                                    IndexCell[0] = -1;
+                                    IndexCell[1] = -1;
+                                }
+                            }
+                        }
+                        if (IndexCell[0] != -1 && IndexCell[1] != -1)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            if (mode == "vertical")
+            {
+                bool FlagFindAnswer = false;
+                for (int j = PreviousCell[0] + 1; j < NumberManufacturers; j++)
+                {
+                    if (!CellsFlagContent[j, PreviousCell[1]])
+                    {
+                        if (FirstFreeIndex > -1 && FirstFreeIndex + 1 < ContourPath.Length)
+                        {
+                            IndexCell[0] = j;
+                            IndexCell[1] = PreviousCell[1];
+                            ContourPath[FirstFreeIndex] = IndexCell[0];
+                            ContourPath[FirstFreeIndex + 1] = IndexCell[1];
+                            FlagFindAnswer = StepContour(IndexCell, ContourPath, "horizontal");
+                            if (!FlagFindAnswer)
+                            {
+                                ContourPath[FirstFreeIndex] = -1;
+                                ContourPath[FirstFreeIndex + 1] = -1;
+                                IndexCell[0] = -1;
+                                IndexCell[1] = -1;
+                            }
+                        }
+                    }
+                    if (IndexCell[0] != -1 && IndexCell[1] != -1)
+                    {
+                        return true;
+                    }
+                }
+                if (!FlagFindAnswer)
+                {
+                    for (int j = PreviousCell[0] - 1; j >= 0; j--)
+                    {
+                        if (!CellsFlagContent[j, PreviousCell[1]])
+                        {
+                            if (FirstFreeIndex > -1 && FirstFreeIndex + 1 < ContourPath.Length)
+                            {
+                                IndexCell[0] = j;
+                                IndexCell[1] = PreviousCell[1];
+                                ContourPath[FirstFreeIndex] = IndexCell[0];
+                                ContourPath[FirstFreeIndex + 1] = IndexCell[1];
+                                FlagFindAnswer = StepContour(IndexCell, ContourPath, "horizontal");
+                                if (!FlagFindAnswer)
+                                {
+                                    ContourPath[FirstFreeIndex] = -1;
+                                    ContourPath[FirstFreeIndex + 1] = -1;
+                                    IndexCell[0] = -1;
+                                    IndexCell[1] = -1;
+                                }
+                            }
+                        }
+                        if (IndexCell[0] != -1 && IndexCell[1] != -1)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            if ((PreviousCell[0] != ContourPath[2] || PreviousCell[1] != ContourPath[3]) &&
+                (PreviousCell[0] == ContourPath[0] || PreviousCell[1] == ContourPath[1]))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool CheckContourPath(int[] Cell, int[] ContourPath)
+        {
+            for (int i = 0; i < ContourPath.Length; i += 2)
+            {
+                if (Cell[0] == ContourPath[i] && Cell[1] == ContourPath[i + 1])
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

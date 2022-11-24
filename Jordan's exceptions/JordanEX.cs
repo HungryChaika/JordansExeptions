@@ -247,17 +247,20 @@ namespace JordansExceptions
                     transportTask.CheckIntermediateResult();
                     if (Result)
                     {
+                        Console.Write("\n\n******************************************************************\n");
+                        Console.Write("******************************************************************\n\n");
                         Console.Write("Ф-ия F = " + transportTask.CalculateF() + ";\n\n");
                         transportTask.FindPotentials();
                         int[] IndexCell = transportTask.CheckPotentials();
-                        Console.Write(IndexCell[0] + "   " + IndexCell[1]);
+                        Console.Write($"Точка старта контура: {IndexCell[0]} , {IndexCell[1]}");
                         if (IndexCell[0] == -1 && IndexCell[1] == -1)
                         {
                             break;
                         }
                         else
                         {
-                            //break;
+                            transportTask.FindContour(IndexCell);
+                            break;
                             //Поиски контура
                         }
                     }
