@@ -235,8 +235,8 @@ namespace JordansExceptions
             else if (SelectedMethod == 3) // Транспортная задача
             {
                 TransportTask transportTask = new TransportTask(ui);
-                transportTask.TaskInit();
-                //transportTask.TaskInitTest();
+                //transportTask.TaskInit();
+                transportTask.TaskInitTest();
                 transportTask.CheckIntermediateResult();
                 while (true)
                 {//Создание плана

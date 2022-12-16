@@ -23,18 +23,33 @@ namespace JordansExceptions
 
         public void TaskInitTest()
         {
-            NumberManufacturers = 3;
-            Manufacturers = new int[] { 90, 70, 50 };
-            NumberConsumers = 4;
-            Consumers = new int[] { 80, 60, 40, 30 };
-            CellsRates = new int[,] { { 2, 1, 3, 2 }, { 2, 3, 3, 1 }, { 3, 3, 2, 1 } };
-            CellsContent = new int[,] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+            NumberManufacturers = 4;
+            Manufacturers = new int[] { 4, 6, 10, 10 };
+            NumberConsumers = 5;
+            Consumers = new int[] { 7, 7, 7, 7, 2 };
+            CellsRates = new int[,] { { 16, 30, 17, 10, 4 }, { 30, 27, 26, 9, 23 }, { 13, 4, 22, 3, 1 }, { 3, 1, 5, 4, 24 } };
+            CellsContent = new int[,] { { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0 } };
             CellsFlagContent = new bool[,] {
-                { true, true, true, true },
-                { true, true, true, true },
-                { true, true, true, true }
+                { true, true, true, true, true },
+                { true, true, true, true, true },
+                { true, true, true, true, true },
+                { true, true, true, true, true }
             };
-            IndexMinRate = new int[] { 1, 3 };
+            IndexMinRate = new int[] { 2, 4 };
+            //******************************************************************************
+            //NumberManufacturers = 3;
+            //Manufacturers = new int[] { 90, 70, 50 };
+            //NumberConsumers = 4;
+            //Consumers = new int[] { 80, 60, 40, 30 };
+            //CellsRates = new int[,] { { 2, 1, 3, 2 }, { 2, 3, 3, 1 }, { 3, 3, 2, 1 } };
+            //CellsContent = new int[,] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+            //CellsFlagContent = new bool[,] {
+            //    { true, true, true, true },
+            //    { true, true, true, true },
+            //    { true, true, true, true }
+            //};
+            //IndexMinRate = new int[] { 1, 3 };
+            //******************************************************************************
             //NumberManufacturers = 4;
             //Manufacturers = new int[] { 85, 112, 72, 120 };
             //NumberConsumers = 5;
@@ -281,6 +296,12 @@ namespace JordansExceptions
 
         private bool StepContour(int[] PreviousCell, int[] ContourPath, string mode)
         {
+            if (Array.IndexOf(ContourPath, -1) > 5 &&
+                (PreviousCell[0] == ContourPath[0] || PreviousCell[1] == ContourPath[1]))
+            {
+                return true;
+            }
+
             int[] IndexCell = {-1, -1};
             int FirstFreeIndex = Array.IndexOf(ContourPath, -1);
             if (mode == "horizontal")
@@ -397,11 +418,7 @@ namespace JordansExceptions
                     }
                 }
             }
-            if ((PreviousCell[0] != ContourPath[2] || PreviousCell[1] != ContourPath[3]) &&
-                (PreviousCell[0] == ContourPath[0] || PreviousCell[1] == ContourPath[1]))
-            {
-                return true;
-            }
+
             return false;
         }
 
