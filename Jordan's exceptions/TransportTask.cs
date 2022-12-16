@@ -125,6 +125,39 @@ namespace JordansExceptions
             CellsContent[IndexMinRate[0], IndexMinRate[1]] = Content;
         }
 
+        public bool FindNextMinRateInternetVersion()
+        {
+            int[] OldIndex = new int[IndexMinRate.Length];//new int[] { IndexMinRate[0], IndexMinRate[1] };
+            IndexMinRate.CopyTo(OldIndex, 0);
+            bool FlagFirstAssign = true;
+            for (int i = 0; i < NumberManufacturers; i++)
+            {
+                for (int j = 0; j < NumberConsumers; j++)
+                {
+                    if (CellsFlagContent[i,j] && Manufacturers[i] > 0 && Consumers[j] > 0)
+                    {
+                        if (FlagFirstAssign)
+                        {
+                            IndexMinRate = new int[2] { i, j };
+                            FlagFirstAssign = false;
+                        }
+                        else if (CellsRates[i, j] <= CellsRates[IndexMinRate[0], IndexMinRate[1]])
+                        {
+                            IndexMinRate = new int[2] { i, j };
+                        }
+                    }
+                }
+            }
+            if (OldIndex[0] == IndexMinRate[0] && OldIndex[1] == IndexMinRate[1])
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public bool FindNextMinRate()
         {
             int[] OldIndex = new int[] { IndexMinRate[0], IndexMinRate[1] };

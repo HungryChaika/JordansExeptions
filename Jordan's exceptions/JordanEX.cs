@@ -242,7 +242,7 @@ namespace JordansExceptions
                 {//Создание плана
                     Console.Write("\n\n******************************************************************\n\n");
                     transportTask.Step();
-                    bool Result = transportTask.FindNextMinRate();
+                    bool Result = transportTask.FindNextMinRate();//FindNextMinRateInternetVersion();
                     transportTask.CheckIntermediateResult();
                     if (Result)
                     {
